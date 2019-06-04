@@ -27,9 +27,9 @@ def hello():
 def is_it_prime_number(number):
     if number > 1 and all(number%i for i in islice(count(2), int(sqrt(number)-1))):
         cache.rpush('primes', number)
-        print(str(number) + "is prime")
+        return str(number) + "is prime"
     else:
-        print(str(number) + "is not prime")
+        return str(number) + "is not prime"
 
 @app.route('/primesStored')
 def get_stored_prime():
