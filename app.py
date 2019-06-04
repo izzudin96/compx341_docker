@@ -33,4 +33,8 @@ def is_it_prime_number(number):
 
 @app.route('/primesStored')
 def get_stored_prime():
-    return str(cache.lrange('primes', 0, cache.llen('primes')))
+    primes = cache.lrange('primes', 0, -1)
+    message = ''
+    for prime in primes:
+        message += str(int(prime)) + '\n'
+    return message
