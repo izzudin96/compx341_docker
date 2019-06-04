@@ -1,6 +1,7 @@
 import time
 import redis
 from flask import Flask
+from math import sqrt; from itertools import count, islice
 
 app = Flask(__name__)
 cache = redis.Redis(host='redis', port=6379)
@@ -16,20 +17,6 @@ def get_hit_count():
             retries -= 1
             time.sleep(0.5)
 
-def isPrime(number):
-    if number > 1:
-        for i in range(2, number//2):
-            if(number%i)==0:
-                print(number, "is not a prime")
-                return False
-                break
-        else:
-            print(number, "is prime")
-            return True
-    else:
-         print(number, "is not prime")
-         return False;
-
 @app.route('/')
 def hello():
     count = get_hit_count()
@@ -37,13 +24,13 @@ def hello():
 
 
 @app.route('/isPrime/<int:number>')
-def isitPrime(number):
-    if(isPrime(number)):
+def is_it_prime_number(number):
+    if number > 1 and all(number%i for i in islice(count(2), int(sqrt(number)-1))):
         cache.rpush('primes', number)
+        print(str(number) + "is prime")
     else:
-        return;
+        print(str(number) + "is not prime")
 
 @app.route('/primesStored')
-def getStoredPrime():
+def get_stored_prime():
     return str(cache.lrange('primes', 0, cache.llen('primes')))
-
